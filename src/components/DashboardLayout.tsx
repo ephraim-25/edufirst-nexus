@@ -1,12 +1,11 @@
-import { ReactNode } from "react";
+import { ReactNode, useState, useEffect } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   GraduationCap, LayoutDashboard, Users, BookOpen,
   ShoppingBag, BarChart3, Settings, LogOut, Bell, Search,
-  ClipboardList, FileText, Home, Heart
+  ClipboardList, FileText, Heart, Menu, X
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 
 type Role = "admin" | "teacher" | "student" | "parent";
 
@@ -59,66 +58,131 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
   const navigate = useNavigate();
   const location = useLocation();
   const items = navByRole[role];
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  return (
-    <div className="min-h-screen flex bg-background">
-      {/* Sidebar */}
-      <aside className="w-64 bg-card flex flex-col shadow-surface shrink-0">
-        <div className="p-5 flex items-center gap-2.5">
+  // Close sidebar on route change
+  useEffect(() => {
+    setSidebarOpen(false);
+  }, [location.pathname]);
+
+  // Close sidebar on escape
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSidebarOpen(false);
+    };
+    document.addEventListener("keydown", handler);
+    return () => document.removeEventListener("keydown", handler);
+  }, []);
+
+  const sidebarContent = (
+    <>
+      <div className="p-5 flex items-center justify-between">
+        <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
             <GraduationCap className="w-5 h-5 text-primary-foreground" />
           </div>
           <span className="font-bold text-foreground">EduFirst</span>
         </div>
+        <button
+          onClick={() => setSidebarOpen(false)}
+          className="lg:hidden p-1.5 rounded-lg hover:bg-secondary transition-colors"
+        >
+          <X className="w-4 h-4 text-muted" />
+        </button>
+      </div>
 
-        <div className="px-4 mb-2">
-          <span className="text-xs font-semibold text-muted uppercase tracking-wider">{roleLabels[role]}</span>
-        </div>
+      <div className="px-4 mb-2">
+        <span className="text-xs font-semibold text-muted uppercase tracking-wider">{roleLabels[role]}</span>
+      </div>
 
-        <nav className="flex-1 px-3 space-y-0.5">
-          {items.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
-                  isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted hover:bg-secondary hover:text-foreground"
-                }`}
-              >
-                <item.icon className="w-4 h-4" />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+      <nav className="flex-1 px-3 space-y-0.5">
+        {items.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+                isActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted hover:bg-secondary hover:text-foreground"
+              }`}
+            >
+              <item.icon className="w-4 h-4" />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
 
-        <div className="p-3 mt-auto">
-          <button
-            onClick={() => navigate("/")}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-secondary hover:text-foreground transition-all duration-200 w-full"
-          >
-            <LogOut className="w-4 h-4" />
-            Déconnexion
-          </button>
-        </div>
+      <div className="p-3 mt-auto">
+        <button
+          onClick={() => navigate("/")}
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-secondary hover:text-foreground transition-all duration-200 w-full"
+        >
+          <LogOut className="w-4 h-4" />
+          Déconnexion
+        </button>
+      </div>
+    </>
+  );
+
+  return (
+    <div className="min-h-screen flex bg-background">
+      {/* Desktop Sidebar */}
+      <aside className="hidden lg:flex w-64 bg-card flex-col shadow-surface shrink-0">
+        {sidebarContent}
       </aside>
+
+      {/* Mobile Sidebar Overlay */}
+      <AnimatePresence>
+        {sidebarOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed inset-0 bg-foreground/20 backdrop-blur-sm z-40 lg:hidden"
+              onClick={() => setSidebarOpen(false)}
+            />
+            <motion.aside
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
+              className="fixed inset-y-0 left-0 w-72 bg-card shadow-surface flex flex-col z-50 lg:hidden"
+            >
+              {sidebarContent}
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Bar */}
-        <header className="h-14 bg-card shadow-surface flex items-center justify-between px-6 shrink-0">
-          <div className="flex items-center gap-3 flex-1 max-w-md">
-            <Search className="w-4 h-4 text-muted" />
-            <input
-              type="text"
-              placeholder="Rechercher (⌘K)"
-              className="bg-transparent text-sm text-foreground placeholder:text-muted/50 focus:outline-none w-full"
-            />
+        <header className="h-14 bg-card shadow-surface flex items-center justify-between px-4 sm:px-6 shrink-0">
+          <div className="flex items-center gap-3 flex-1">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="lg:hidden p-2 -ml-2 rounded-lg hover:bg-secondary transition-colors"
+            >
+              <Menu className="w-5 h-5 text-foreground" />
+            </button>
+            <div className="hidden sm:flex items-center gap-3 flex-1 max-w-md">
+              <Search className="w-4 h-4 text-muted" />
+              <input
+                type="text"
+                placeholder="Rechercher (⌘K)"
+                className="bg-transparent text-sm text-foreground placeholder:text-muted/50 focus:outline-none w-full"
+              />
+            </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <button className="sm:hidden p-2 rounded-lg hover:bg-secondary transition-colors">
+              <Search className="w-4 h-4 text-muted" />
+            </button>
             <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
               <Bell className="w-4 h-4 text-muted" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" />
@@ -130,7 +194,7 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
         </header>
 
         {/* Content */}
-        <main className="flex-1 p-6 overflow-auto">
+        <main className="flex-1 p-4 sm:p-6 overflow-auto">
           <motion.div
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
