@@ -19,6 +19,7 @@ const navByRole: Record<Role, NavItem[]> = {
   admin: [
     { label: "Tableau de bord", icon: LayoutDashboard, path: "/dashboard/admin" },
     { label: "Étudiants", icon: Users, path: "/dashboard/admin/students" },
+    { label: "Gestion des Accès", icon: ClipboardList, path: "/dashboard/admin/access" },
     { label: "Finances", icon: BarChart3, path: "/dashboard/admin/finances" },
     { label: "EduStore", icon: ShoppingBag, path: "/dashboard/admin/store" },
     { label: "Paramètres", icon: Settings, path: "/dashboard/admin/settings" },
@@ -28,17 +29,20 @@ const navByRole: Record<Role, NavItem[]> = {
     { label: "Mes classes", icon: BookOpen, path: "/dashboard/teacher/classes" },
     { label: "Notes", icon: ClipboardList, path: "/dashboard/teacher/grades" },
     { label: "Bibliothèque", icon: FileText, path: "/dashboard/teacher/library" },
+    { label: "Paramètres", icon: Settings, path: "/dashboard/teacher/settings" },
   ],
   student: [
     { label: "Tableau de bord", icon: LayoutDashboard, path: "/dashboard/student" },
     { label: "Mes cours", icon: BookOpen, path: "/dashboard/student/courses" },
     { label: "Mes notes", icon: ClipboardList, path: "/dashboard/student/grades" },
     { label: "Notifications", icon: Bell, path: "/dashboard/student/notifications" },
+    { label: "Paramètres", icon: Settings, path: "/dashboard/student/settings" },
   ],
   parent: [
     { label: "Tableau de bord", icon: LayoutDashboard, path: "/dashboard/parent" },
-    { label: "Suivi enfant", icon: Heart, path: "/dashboard/parent/child" },
+    { label: "Mes Enfants", icon: Heart, path: "/dashboard/parent/children" },
     { label: "EduStore", icon: ShoppingBag, path: "/dashboard/parent/store" },
+    { label: "Paramètres", icon: Settings, path: "/dashboard/parent/settings" },
   ],
 };
 
@@ -183,13 +187,13 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
             <button className="sm:hidden p-2 rounded-lg hover:bg-secondary transition-colors">
               <Search className="w-4 h-4 text-muted" />
             </button>
-            <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
+            <Link to={`/dashboard/${role}/notifications`} className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
               <Bell className="w-4 h-4 text-muted" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" />
-            </button>
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+            </Link>
+            <Link to={`/dashboard/${role}/profile`} className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center hover:ring-2 hover:ring-primary/30 transition-all">
               <span className="text-xs font-semibold text-primary">AD</span>
-            </div>
+            </Link>
           </div>
         </header>
 

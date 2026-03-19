@@ -133,10 +133,10 @@ const Login = () => {
 
           <div className="mt-6 text-center">
             <Link
-              to="/onboarding"
+              to="/register"
               className="text-sm font-medium text-primary hover:text-primary/80 transition-colors"
             >
-              Enregistrez votre école →
+              Créer un compte →
             </Link>
           </div>
         </motion.div>
