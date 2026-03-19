@@ -150,6 +150,12 @@ const Register = () => {
                 </div>
 
                 <div className="space-y-1.5">
+                  <Label htmlFor="inviteCode">Code Invitation (fourni par l'école)</Label>
+                  <Input id="inviteCode" placeholder="Ex: EDU-NORD-2025" value={form.specialty} onChange={(e) => setForm({ ...form, specialty: e.target.value })} />
+                  <p className="text-[11px] text-muted-foreground">Ce code vous rattache automatiquement à l'établissement.</p>
+                </div>
+
+                <div className="space-y-1.5">
                   <Label htmlFor="specialty">{specialtyLabel}</Label>
                   <Input id="specialty" placeholder={specialtyPlaceholder} value={form.specialty} onChange={(e) => setForm({ ...form, specialty: e.target.value })} required />
                 </div>
