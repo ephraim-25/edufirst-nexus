@@ -187,13 +187,13 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
             <button className="sm:hidden p-2 rounded-lg hover:bg-secondary transition-colors">
               <Search className="w-4 h-4 text-muted" />
             </button>
-            <button className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
+            <Link to={`/dashboard/${role}/notifications`} className="relative p-2 rounded-lg hover:bg-secondary transition-colors">
               <Bell className="w-4 h-4 text-muted" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-primary rounded-full" />
-            </button>
-            <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+            </Link>
+            <Link to={`/dashboard/${role}/profile`} className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center hover:ring-2 hover:ring-primary/30 transition-all">
               <span className="text-xs font-semibold text-primary">AD</span>
-            </div>
+            </Link>
           </div>
         </header>
 
