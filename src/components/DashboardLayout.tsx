@@ -4,8 +4,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   GraduationCap, LayoutDashboard, Users, BookOpen,
   ShoppingBag, BarChart3, Settings, LogOut, Bell, Search,
-  ClipboardList, FileText, Heart, Menu, X
+  ClipboardList, FileText, Heart, Menu, X, MessageCircle,
+  Calendar, Shield, Briefcase, Bus, Newspaper, Wallet, Trophy, Building2
 } from "lucide-react";
+import CampusSwitcher from "./CampusSwitcher";
 
 type Role = "admin" | "teacher" | "student" | "parent";
 
