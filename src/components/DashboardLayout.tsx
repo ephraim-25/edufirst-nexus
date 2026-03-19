@@ -117,6 +117,8 @@ const DashboardLayout = ({ children, role }: DashboardLayoutProps) => {
         </button>
       </div>
 
+      {role === "admin" && <CampusSwitcher />}
+
       <div className="px-4 mb-2">
         <span className="text-xs font-semibold text-muted uppercase tracking-wider">{roleLabels[role]}</span>
       </div>
