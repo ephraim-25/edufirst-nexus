@@ -5,7 +5,7 @@ import {
   GraduationCap, LayoutDashboard, Users, BookOpen,
   ShoppingBag, BarChart3, Settings, LogOut, Bell, Search,
   ClipboardList, FileText, Heart, Menu, X, MessageCircle,
-  Calendar, Shield, Briefcase, Bus, Newspaper, Wallet, Trophy, Building2
+  Calendar, Shield, Briefcase, Bus, Newspaper, Wallet, Trophy, Building2, Package
 } from "lucide-react";
 import CampusSwitcher from "./CampusSwitcher";
 
