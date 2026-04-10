@@ -17,6 +17,8 @@ import OverviewPage from "./pages/admin/OverviewPage";
 import DisciplinePage from "./pages/admin/DisciplinePage";
 import HRPage from "./pages/admin/HRPage";
 import TransportPage from "./pages/admin/TransportPage";
+import StoreManagementPage from "./pages/admin/StoreManagementPage";
+import FinancePage from "./pages/admin/FinancePage";
 import GradesEntryPage from "./pages/teacher/GradesEntryPage";
 import EduStore from "./pages/store/EduStore";
 import ProfilePage from "./pages/shared/ProfilePage";
@@ -57,6 +59,8 @@ const App = () => (
           <Route path="/dashboard/admin/wall" element={<SchoolWallPage role="admin" />} />
           <Route path="/dashboard/admin/honor" element={<HonorBoardPage role="admin" />} />
           <Route path="/dashboard/admin/store" element={<EduStore role="admin" />} />
+          <Route path="/dashboard/admin/store-management" element={<StoreManagementPage />} />
+          <Route path="/dashboard/admin/finance" element={<FinancePage />} />
           <Route path="/dashboard/admin/profile" element={<ProfilePage role="admin" />} />
           <Route path="/dashboard/admin/settings" element={<SettingsPage role="admin" />} />
           <Route path="/dashboard/admin/notifications" element={<NotificationsPage role="admin" />} />
