@@ -1,6 +1,7 @@
 import { useState } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { DollarSign, TrendingUp, AlertCircle, Wallet, FileText, MessageSquare, Download, Filter, ArrowUpRight } from "lucide-react";
+import { generateReceiptPDF } from "@/lib/generateReceipt";
 import { AreaChart, Area, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 const revenueByMonth = [
@@ -275,7 +276,7 @@ const FinancePage = () => {
                       </td>
                       <td className="px-6 py-3 text-right">
                         {t.type === "credit" && (
-                          <button className="p-1.5 rounded-lg hover:bg-secondary transition-colors" title="Télécharger le reçu">
+                          <button onClick={() => generateReceiptPDF(t)} className="p-1.5 rounded-lg hover:bg-secondary transition-colors" title="Télécharger le reçu">
                             <FileText className="w-4 h-4 text-primary" />
                           </button>
                         )}

@@ -1,6 +1,7 @@
 import DashboardLayout from "@/components/DashboardLayout";
 import { DollarSign, Download, Receipt, CreditCard, TrendingUp, CheckCircle, Clock, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { generateReceiptPDF } from "@/lib/generateReceipt";
 
 const summary = { total: 1850000, paid: 1350000, pending: 350000, overdue: 150000 };
 
@@ -82,7 +83,7 @@ const WalletPage = () => (
                 </td>
                 <td className="px-6 py-3">
                   {t.status === "Payé" && (
-                    <button className="p-1.5 rounded-lg hover:bg-secondary transition-colors" title="Télécharger le reçu">
+                    <button onClick={() => generateReceiptPDF({ id: `R-${t.id}`, date: t.date, description: t.label, category: t.type, extension: "—", amount: t.amount })} className="p-1.5 rounded-lg hover:bg-secondary transition-colors" title="Télécharger le reçu">
                       <Download className="w-4 h-4 text-muted-foreground" />
                     </button>
                   )}
