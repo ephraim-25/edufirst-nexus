@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Mur de l'école</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<body class="bg-bg"><div data-page-content>
+  <div class="max-w-2xl mx-auto space-y-5">
+    <div class="edu-card p-5"><textarea class="input" style="height:auto;padding:0.75rem 1rem;" rows="3" placeholder="Partagez une annonce ou un événement..."></textarea><div class="flex justify-end mt-3"><button onclick="toast('Publication envoyée ✓')" class="btn btn-primary">Publier</button></div></div>
+    <div id="posts" class="space-y-5"></div>
+  </div>
+</div>
+<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script>
+renderLayout({ role: "admin", title: "Mur de l'école", subtitle: "Annonces, photos et événements" });
+const posts = [
+  {a:"Direction",t:"il y a 2 h",txt:"Bravo à nos élèves de Terminale C pour leurs résultats au concours national de Mathématiques ! 🏆",emoji:"🏆🎓"},
+  {a:"Mme Kouassi",t:"hier",txt:"Sortie pédagogique au musée le vendredi 22 mars. Inscriptions au secrétariat.",emoji:"🚌🏛️"},
+  {a:"Direction",t:"il y a 3 j",txt:"Le tournoi de football inter-classes commence ce week-end. Rendez-vous au stade !",emoji:"⚽🏟️"},
+];
+document.getElementById("posts").innerHTML = posts.map(p=>`<div class="edu-card p-5"><div class="flex items-center gap-3 mb-3"><div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary-glow text-white flex items-center justify-center font-bold">${p.a[0]}</div><div><div class="font-semibold text-sm">${p.a}</div><div class="text-xs text-muted">${p.t}</div></div></div><p class="text-sm">${p.txt}</p><div class="aspect-video bg-primary-soft rounded-lg mt-3 flex items-center justify-center text-5xl">${p.emoji}</div><div class="flex gap-4 mt-3 text-sm text-muted"><button class="hover:text-primary">❤️ J'aime</button><button class="hover:text-primary">💬 Commenter</button></div></div>`).join("");
+</script></body></html>

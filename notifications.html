@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Notifications</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<body class="bg-bg"><div data-page-content>
+  <div class="edu-card p-6">
+    <div class="flex justify-between items-center mb-4"><h2 class="font-semibold">Toutes les alertes</h2><button onclick="markAll()" class="text-sm text-primary font-medium">Tout marquer lu</button></div>
+    <div id="list" class="space-y-2"></div>
+  </div>
+</div>
+<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script>
+renderLayout({ role: "admin", title: "Notifications", subtitle: "Centre des alertes" });
+let notifs = [
+  {id:1,type:"chart",t:"Nouveau paiement reçu",d:"Aïcha Diallo — 450 000 FCFA",time:"il y a 5 min",read:false,col:"success"},
+  {id:2,type:"msg",t:"Nouveau message",d:"Mme Kouassi vous a écrit",time:"il y a 1 h",read:false,col:"primary"},
+  {id:3,type:"alert",t:"Stock critique",d:"Tablettes EduTab — 3 restantes",time:"il y a 2 h",read:false,col:"danger"},
+  {id:4,type:"calendar",t:"Réunion programmée",d:"Conseil de classe — 20 Mar 14:00",time:"hier",read:true,col:"primary"},
+  {id:5,type:"trophy",t:"Bulletin publié",d:"Trim. 2 — 3ème A disponible",time:"il y a 2 j",read:true,col:"success"},
+];
+const render = () => {
+  document.getElementById("list").innerHTML = notifs.map(n=>`<div class="flex gap-4 p-4 rounded-xl ${n.read?'':'bg-primary-soft'} hover:bg-bg transition"><div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${n.col==='success'?'bg-emerald-100 text-emerald-600':n.col==='danger'?'bg-red-100 text-red-600':'bg-primary-soft text-primary'}">${icon(n.type,"w-5 h-5")}</div><div class="flex-1"><div class="font-semibold text-sm">${n.t}</div><div class="text-sm text-muted">${n.d}</div><div class="text-xs text-muted mt-1">${n.time}</div></div><button onclick="del(${n.id})" class="text-muted hover:text-red-500 p-1">${icon("trash","w-4 h-4")}</button></div>`).join("");
+};
+window.del = (id) => { notifs = notifs.filter(n=>n.id!==id); render(); };
+window.markAll = () => { notifs.forEach(n=>n.read=true); render(); toast("Toutes les alertes marquées comme lues"); };
+render();
+</script></body></html>

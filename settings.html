@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Paramètres</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<body class="bg-bg"><div data-page-content>
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="edu-card p-6">
+      <h2 class="font-semibold mb-4">Sécurité</h2>
+      <form onsubmit="event.preventDefault();toast('Mot de passe mis à jour ✓')" class="space-y-4">
+        <div><label class="block text-sm font-medium mb-1.5">Mot de passe actuel</label><input type="password" class="input" required /></div>
+        <div><label class="block text-sm font-medium mb-1.5">Nouveau mot de passe</label><input type="password" class="input" required /></div>
+        <div><label class="block text-sm font-medium mb-1.5">Confirmer</label><input type="password" class="input" required /></div>
+        <button class="btn btn-primary w-full">Mettre à jour</button>
+      </form>
+    </div>
+    <div class="edu-card p-6">
+      <h2 class="font-semibold mb-4">Préférences</h2>
+      <div class="space-y-4">
+        <div class="flex justify-between items-center"><div><div class="font-medium text-sm">Mode sombre</div><div class="text-xs text-muted">Réduire la fatigue visuelle</div></div><button id="dark-toggle" onclick="this.textContent=this.textContent==='Activer'?'Désactiver':'Activer'" class="btn btn-outline">Activer</button></div>
+        <div><label class="block text-sm font-medium mb-1.5">Langue</label><select class="input"><option>Français</option><option>English</option><option>العربية</option></select></div>
+        <div><label class="block text-sm font-medium mb-1.5">Notifications email</label><select class="input"><option>Toutes</option><option>Importantes seulement</option><option>Aucune</option></select></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script>renderLayout({ role: "admin", title: "Paramètres", subtitle: "Compte, sécurité et préférences" });</script>
+</body></html>
