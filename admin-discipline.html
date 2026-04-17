@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — Discipline</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+</head>
+<body class="bg-bg">
+  <div data-page-content>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="kpis"></div>
+    <div class="edu-card p-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="font-semibold">Rapports récents</h2>
+        <button class="btn btn-primary"><span id="plus"></span> Nouveau rapport</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead><tr><th>Date</th><th>Élève</th><th>Type</th><th>Description</th><th>Sévérité</th></tr></thead>
+          <tbody id="body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+  <script>
+    renderLayout({ role: "admin", title: "Discipline & Suivi", subtitle: "Absences, retards et rapports de conduite" });
+    document.getElementById("plus").innerHTML = icon("plus", "w-4 h-4");
+    document.getElementById("kpis").innerHTML = [
+      { l: "Absences semaine", v: "23", i: "alert" }, { l: "Retards", v: "47", i: "calendar" },
+      { l: "Rapports ouverts", v: "8", i: "edit" }, { l: "Présence globale", v: "96%", i: "check" },
+    ].map(s => `<div class="edu-card p-5"><div class="w-9 h-9 rounded-lg bg-primary-soft text-primary flex items-center justify-center mb-2">${icon(s.i,"w-4 h-4")}</div><div class="text-2xl font-bold">${s.v}</div><div class="text-xs text-muted mt-1">${s.l}</div></div>`).join("");
+    const reports = [
+      { date: "15 Mar", eleve: "Kofi M.", type: "Absence", desc: "Absent sans justificatif", sev: "warning" },
+      { date: "14 Mar", eleve: "Aïcha D.", type: "Retard", desc: "3 retards cette semaine", sev: "warning" },
+      { date: "13 Mar", eleve: "Yann K.", type: "Conduite", desc: "Bagarre en récréation", sev: "danger" },
+      { date: "10 Mar", eleve: "Sara O.", type: "Mérite", desc: "Aide à un camarade en difficulté", sev: "success" },
+    ];
+    document.getElementById("body").innerHTML = reports.map(r => `
+      <tr><td class="text-muted text-sm">${r.date}</td><td class="font-medium">${r.eleve}</td><td><span class="badge badge-primary">${r.type}</span></td><td class="text-muted text-sm">${r.desc}</td><td><span class="badge badge-${r.sev}">${r.sev === "danger" ? "Grave" : r.sev === "warning" ? "Modérée" : "Positive"}</span></td></tr>
+    `).join("");
+  </script>
+</body></html>

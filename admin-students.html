@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — Étudiants</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+</head>
+<body class="bg-bg">
+  <div data-page-content>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="kpis"></div>
+    <div class="edu-card p-6">
+      <div class="flex flex-wrap gap-3 items-center justify-between mb-5">
+        <input id="search" type="text" class="input max-w-xs" placeholder="Rechercher un étudiant..." />
+        <button class="btn btn-primary"><span id="plus"></span> Ajouter un étudiant</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead><tr><th>Étudiant</th><th>Code unique</th><th>Classe</th><th>Parent</th><th>Solde</th><th>Statut</th></tr></thead>
+          <tbody id="body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+  <script>
+    renderLayout({ role: "admin", title: "Étudiants", subtitle: "Liste complète des élèves de votre établissement" });
+    document.getElementById("plus").innerHTML = icon("plus", "w-4 h-4");
+    const students = [
+      { name: "Aïcha Diallo", code: "EDU-A4F2K9", classe: "3ème A", parent: "M. Diallo", balance: -250000 },
+      { name: "Kofi Mensah", code: "EDU-K7H3L1", classe: "5ème B", parent: "Mme Mensah", balance: 0 },
+      { name: "Sara Ouedraogo", code: "EDU-S2X8M5", classe: "CM2", parent: "M. Ouedraogo", balance: -95000 },
+      { name: "Yann Koffi", code: "EDU-Y9R4P3", classe: "Terminale C", parent: "Mme Koffi", balance: 50000 },
+      { name: "Fatou Camara", code: "EDU-F1V6T8", classe: "4ème A", parent: "M. Camara", balance: 0 },
+    ];
+    document.getElementById("kpis").innerHTML = [
+      { l: "Total", v: "1 247", i: "users" }, { l: "Inscrits ce mois", v: "+42", i: "trending" },
+      { l: "Présence", v: "96%", i: "check" }, { l: "Solde +", v: "1 089", i: "wallet" },
+    ].map(s => `<div class="edu-card p-5"><div class="w-9 h-9 rounded-lg bg-primary-soft text-primary flex items-center justify-center mb-2">${icon(s.i,"w-4 h-4")}</div><div class="text-2xl font-bold">${s.v}</div><div class="text-xs text-muted mt-1">${s.l}</div></div>`).join("");
+
+    const render = () => {
+      const q = document.getElementById("search").value.toLowerCase();
+      document.getElementById("body").innerHTML = students.filter(s => !q || s.name.toLowerCase().includes(q)).map(s => `
+        <tr>
+          <td><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">${s.name.split(" ").map(x=>x[0]).join("")}</div><span class="font-medium">${s.name}</span></div></td>
+          <td><span class="badge badge-primary font-mono">${s.code}</span></td>
+          <td>${s.classe}</td><td class="text-muted text-sm">${s.parent}</td>
+          <td class="font-semibold ${s.balance < 0 ? "text-red-600" : "text-emerald-600"}">${s.balance.toLocaleString("fr-FR")} FCFA</td>
+          <td><span class="badge badge-success">Actif</span></td>
+        </tr>`).join("");
+    };
+    document.getElementById("search").addEventListener("input", render);
+    render();
+  </script>
+</body></html>
