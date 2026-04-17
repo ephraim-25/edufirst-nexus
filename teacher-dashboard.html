@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Dashboard Professeur</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<body class="bg-bg"><div data-page-content>
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="kpis"></div>
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="edu-card p-6"><h2 class="font-semibold mb-4">Mes classes</h2><div id="classes" class="space-y-3"></div></div>
+    <div class="edu-card p-6"><h2 class="font-semibold mb-4">Prochains cours</h2><div id="schedule" class="space-y-3"></div></div>
+  </div>
+</div>
+<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script>
+renderLayout({ role: "teacher", title: "Bonjour, Mme Kouassi", subtitle: "Voici votre journée" });
+document.getElementById("kpis").innerHTML = [{l:"Classes",v:"6",i:"users"},{l:"Élèves",v:"187",i:"graduation"},{l:"Cours/sem",v:"22",i:"calendar"},{l:"Notes à saisir",v:"34",i:"edit"}].map(s=>`<div class="edu-card p-5"><div class="w-9 h-9 rounded-lg bg-primary-soft text-primary flex items-center justify-center mb-2">${icon(s.i,"w-4 h-4")}</div><div class="text-2xl font-bold">${s.v}</div><div class="text-xs text-muted mt-1">${s.l}</div></div>`).join("");
+document.getElementById("classes").innerHTML = ["3ème A — Maths","3ème B — Maths","4ème A — Maths","Terminale C — Maths","Seconde — Maths","CM2 — Initiation"].map(c=>`<a href="teacher-grades.html" class="flex justify-between items-center p-3 rounded-lg bg-bg hover:bg-primary-soft transition"><span class="font-medium text-sm">${c}</span>${icon("chevronRight","w-4 h-4 text-muted")}</a>`).join("");
+document.getElementById("schedule").innerHTML = [{t:"08:00",c:"3ème A — Géométrie"},{t:"10:00",c:"4ème A — Algèbre"},{t:"14:00",c:"Terminale C — Analyse"}].map(s=>`<div class="flex gap-3 p-3 rounded-lg bg-bg"><div class="text-primary font-semibold text-sm w-12">${s.t}</div><div class="text-sm">${s.c}</div></div>`).join("");
+</script></body></html>

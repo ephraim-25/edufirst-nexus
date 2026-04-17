@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Dashboard Étudiant</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<body class="bg-bg"><div data-page-content>
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="kpis"></div>
+  <div class="grid lg:grid-cols-2 gap-6">
+    <div class="edu-card p-6"><h2 class="font-semibold mb-4">Mes notes récentes</h2><div id="grades" class="space-y-3"></div></div>
+    <div class="edu-card p-6"><h2 class="font-semibold mb-4">Prochains cours</h2><div id="sched" class="space-y-3"></div></div>
+  </div>
+</div>
+<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script>
+renderLayout({ role: "student", title: "Bonjour, Aïcha", subtitle: "Voici votre semaine" });
+document.getElementById("kpis").innerHTML = [{l:"Moyenne",v:"15.4/20",i:"chart"},{l:"Rang",v:"3/32",i:"trophy"},{l:"Présence",v:"98%",i:"check"},{l:"Devoirs",v:"4",i:"edit"}].map(s=>`<div class="edu-card p-5"><div class="w-9 h-9 rounded-lg bg-primary-soft text-primary flex items-center justify-center mb-2">${icon(s.i,"w-4 h-4")}</div><div class="text-2xl font-bold">${s.v}</div><div class="text-xs text-muted mt-1">${s.l}</div></div>`).join("");
+document.getElementById("grades").innerHTML = [{s:"Maths",n:16},{s:"Français",n:14},{s:"Histoire",n:15},{s:"Anglais",n:17}].map(g=>`<div class="flex justify-between p-3 rounded-lg bg-bg"><span class="font-medium text-sm">${g.s}</span><span class="font-bold text-primary">${g.n}/20</span></div>`).join("");
+document.getElementById("sched").innerHTML = [{t:"Lun 08:00",c:"Maths — Mme Kouassi"},{t:"Lun 10:00",c:"Histoire — M. Touré"},{t:"Mar 09:00",c:"Anglais — Mme Sow"}].map(s=>`<div class="flex gap-3 p-3 rounded-lg bg-bg"><div class="text-primary font-semibold text-xs w-20">${s.t}</div><div class="text-sm">${s.c}</div></div>`).join("");
+</script></body></html>

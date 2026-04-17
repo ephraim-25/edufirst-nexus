@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Mes Enfants</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<body class="bg-bg"><div data-page-content>
+  <div class="edu-card p-6 mb-6">
+    <h2 class="font-semibold mb-3">Lier un enfant à votre compte</h2>
+    <p class="text-sm text-muted mb-4">Entrez le code unique fourni par l'établissement.</p>
+    <div class="flex gap-2"><input type="text" class="input max-w-xs font-mono" placeholder="EDU-XXXXXX" /><button onclick="toast('Demande envoyée à l&apos;admin pour validation')" class="btn btn-primary">Lier</button></div>
+  </div>
+  <div class="grid sm:grid-cols-2 gap-4" id="kids"></div>
+</div>
+<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script>
+renderLayout({ role: "parent", title: "Mes enfants", subtitle: "Gérez les liens avec les comptes étudiants" });
+document.getElementById("kids").innerHTML = [{n:"Aïcha Diallo",c:"3ème A",code:"EDU-A4F2K9"},{n:"Mamadou Diallo",c:"6ème B",code:"EDU-M8H2K3"}].map(k=>`<div class="edu-card p-6"><div class="flex items-center gap-4 mb-4"><div class="w-14 h-14 rounded-full bg-gradient-to-br from-primary to-primary-glow text-white flex items-center justify-center font-bold text-lg">${k.n.split(" ").map(x=>x[0]).join("")}</div><div><div class="font-semibold">${k.n}</div><div class="text-sm text-muted">${k.c}</div><div class="text-xs text-muted font-mono mt-1">${k.code}</div></div></div><a href="#" class="btn btn-outline w-full text-sm">Voir le bulletin</a></div>`).join("");
+</script></body></html>
