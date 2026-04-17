@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — Tableau de bord Admin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-bg">
+  <div data-page-content>
+    <!-- Stats grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="stats-grid"></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Revenue chart -->
+      <div class="edu-card p-6 lg:col-span-2">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="font-semibold">Revenus mensuels</h2>
+          <span class="badge badge-success">+18%</span>
+        </div>
+        <canvas id="revenue-chart" height="100"></canvas>
+      </div>
+
+      <!-- Activity -->
+      <div class="edu-card p-6">
+        <h2 class="font-semibold mb-4">Activité récente</h2>
+        <div class="space-y-3 text-sm" id="activity-list"></div>
+      </div>
+    </div>
+
+    <!-- Stock alerts -->
+    <div class="edu-card p-6 mt-6">
+      <div class="flex justify-between items-center mb-4">
+        <h2 class="font-semibold">Alertes inventaire</h2>
+        <a href="admin-store.html" class="text-sm text-primary font-medium">Voir tout →</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead><tr><th>Article</th><th>Stock</th><th>Seuil</th><th>Statut</th></tr></thead>
+          <tbody id="stock-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script>
+    renderLayout({ role: "admin", title: "Tableau de bord", subtitle: "Vue d'ensemble de votre établissement" });
+
+    // Stats
+    const stats = [
+      { label: "Revenus du mois", value: "12.4M FCFA", change: "+18%", icon: "wallet" },
+      { label: "Étudiants", value: "1 247", change: "+42 ce mois", icon: "users" },
+      { label: "Ventes Boutique", value: "3.2M FCFA", change: "+24%", icon: "bag" },
+      { label: "Présence moyenne", value: "96%", change: "stable", icon: "check" },
+    ];
+    document.getElementById("stats-grid").innerHTML = stats.map(s => `
+      <div class="edu-card p-5">
+        <div class="flex items-center justify-between mb-2">
+          <span class="w-9 h-9 rounded-lg bg-primary-soft text-primary flex items-center justify-center">${icon(s.icon, "w-4 h-4")}</span>
+          <span class="badge badge-success">${s.change}</span>
+        </div>
+        <div class="text-2xl font-bold">${s.value}</div>
+        <div class="text-xs text-muted mt-1">${s.label}</div>
+      </div>
+    `).join("");
+
+    // Activity
+    const acts = [
+      { txt: "Nouveau paiement reçu — 450 000 FCFA", time: "il y a 5 min" },
+      { txt: "12 inscriptions Trim. 2 validées", time: "il y a 1 h" },
+      { txt: "Stock bas — Cahiers 100p", time: "il y a 2 h" },
+      { txt: "Bulletin Q2 publié — 3ème A", time: "il y a 4 h" },
+      { txt: "Réunion parents programmée", time: "hier" },
+    ];
+    document.getElementById("activity-list").innerHTML = acts.map(a => `
+      <div class="flex gap-3"><span class="w-1.5 h-1.5 rounded-full bg-primary mt-2 flex-shrink-0"></span><div class="flex-1"><div class="text-foreground">${a.txt}</div><div class="text-xs text-muted">${a.time}</div></div></div>
+    `).join("");
+
+    // Stock
+    const stock = [
+      { item: "Cahiers 100p", stock: 8, seuil: 50, status: "danger" },
+      { item: "Stylos bleus", stock: 22, seuil: 100, status: "warning" },
+      { item: "Uniformes M", stock: 45, seuil: 30, status: "success" },
+      { item: "Tablettes 10\"", stock: 3, seuil: 5, status: "danger" },
+    ];
+    document.getElementById("stock-body").innerHTML = stock.map(s => `
+      <tr><td class="font-medium">${s.item}</td><td>${s.stock}</td><td class="text-muted">${s.seuil}</td><td><span class="badge badge-${s.status}">${s.status === "danger" ? "Critique" : s.status === "warning" ? "Bas" : "OK"}</span></td></tr>
+    `).join("");
+
+    // Chart
+    new Chart(document.getElementById("revenue-chart"), {
+      type: "bar",
+      data: {
+        labels: ["Sep", "Oct", "Nov", "Déc", "Jan", "Fév", "Mar"],
+        datasets: [{ label: "Revenus (M FCFA)", data: [8.2, 9.1, 10.4, 11.2, 10.8, 11.9, 12.4], backgroundColor: "#9156FF", borderRadius: 8 }],
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: "#F1F5F9" } }, x: { grid: { display: false } } } },
+    });
+  </script>
+</body>
+</html>

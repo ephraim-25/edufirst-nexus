@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — Gestion des Accès</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+</head>
+<body class="bg-bg">
+  <div data-page-content>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="role-stats"></div>
+
+    <div class="edu-card p-6">
+      <div class="flex flex-wrap gap-3 items-center justify-between mb-5">
+        <div class="flex flex-wrap gap-3 flex-1">
+          <input id="search" type="text" class="input max-w-xs" placeholder="Rechercher..." />
+          <select id="role-filter" class="input max-w-[180px]">
+            <option value="">Tous rôles</option><option value="teacher">Professeurs</option><option value="parent">Parents</option><option value="student">Étudiants</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="openModal('user-modal')"><span id="plus"></span> Créer un compte</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead><tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Créé le</th><th>Statut</th><th></th></tr></thead>
+          <tbody id="users-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="user-modal" class="modal-overlay">
+    <div class="modal-content p-6">
+      <div class="flex justify-between items-center mb-5">
+        <h2 class="text-lg font-semibold">Créer un compte utilisateur</h2>
+        <button onclick="closeModal('user-modal')" class="text-muted hover:text-foreground" id="x"></button>
+      </div>
+      <form id="user-form" class="space-y-4">
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-sm font-medium mb-1.5">Nom complet</label><input required name="name" class="input" /></div>
+          <div><label class="block text-sm font-medium mb-1.5">Email</label><input required name="email" type="email" class="input" /></div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-sm font-medium mb-1.5">Rôle</label>
+            <select required name="role" class="input"><option value="teacher">Professeur</option><option value="parent">Parent</option></select>
+          </div>
+          <div><label class="block text-sm font-medium mb-1.5">Mot de passe temporaire</label><input required name="pw" type="text" class="input" placeholder="Auto-généré" /></div>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('user-modal')" class="btn btn-ghost">Annuler</button>
+          <button type="submit" class="btn btn-primary">Créer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script>
+    renderLayout({ role: "admin", title: "Gestion des Accès", subtitle: "Comptes parents, professeurs et étudiants" });
+    document.getElementById("plus").innerHTML = icon("plus", "w-4 h-4");
+    document.getElementById("x").innerHTML = icon("x", "w-5 h-5");
+
+    let users = [
+      { id: 1, name: "Marie Kouassi", email: "m.kouassi@ecole.fr", role: "teacher", date: "12 Jan 2025", status: "active" },
+      { id: 2, name: "Famille Diallo", email: "diallo@gmail.com", role: "parent", date: "08 Jan 2025", status: "active" },
+      { id: 3, name: "Aïcha Diallo", email: "aicha.d@eleves.fr", role: "student", date: "08 Jan 2025", status: "active" },
+      { id: 4, name: "Ibrahim Touré", email: "i.toure@ecole.fr", role: "teacher", date: "05 Jan 2025", status: "pending" },
+      { id: 5, name: "Famille Mensah", email: "mensah@gmail.com", role: "parent", date: "02 Jan 2025", status: "active" },
+    ];
+    const labels = { teacher: "Professeur", parent: "Parent", student: "Étudiant" };
+    const colors = { teacher: "primary", parent: "warning", student: "success" };
+
+    const renderStats = () => {
+      const counts = { teacher: 0, parent: 0, student: 0 };
+      users.forEach(u => counts[u.role]++);
+      document.getElementById("role-stats").innerHTML = [
+        { label: "Total", value: users.length, icon: "users" },
+        { label: "Professeurs", value: counts.teacher, icon: "graduation" },
+        { label: "Parents", value: counts.parent, icon: "user" },
+        { label: "Étudiants", value: counts.student, icon: "school" },
+      ].map(s => `
+        <div class="edu-card p-5">
+          <div class="w-9 h-9 rounded-lg bg-primary-soft text-primary flex items-center justify-center mb-2">${icon(s.icon, "w-4 h-4")}</div>
+          <div class="text-2xl font-bold">${s.value}</div>
+          <div class="text-xs text-muted mt-1">${s.label}</div>
+        </div>
+      `).join("");
+    };
+
+    const renderTable = () => {
+      const q = document.getElementById("search").value.toLowerCase();
+      const r = document.getElementById("role-filter").value;
+      const filtered = users.filter(u => (!q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q)) && (!r || u.role === r));
+      document.getElementById("users-body").innerHTML = filtered.map(u => `
+        <tr>
+          <td><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-xs font-semibold">${u.name.split(" ").map(x => x[0]).slice(0, 2).join("")}</div><span class="font-medium">${u.name}</span></div></td>
+          <td class="text-muted text-sm">${u.email}</td>
+          <td><span class="badge badge-${colors[u.role]}">${labels[u.role]}</span></td>
+          <td class="text-muted text-sm">${u.date}</td>
+          <td><span class="badge badge-${u.status === "active" ? "success" : "warning"}">${u.status === "active" ? "Actif" : "En attente"}</span></td>
+          <td class="text-right"><button onclick="delUser(${u.id})" class="text-muted hover:text-red-500 p-1">${icon("trash", "w-4 h-4")}</button></td>
+        </tr>
+      `).join("") || `<tr><td colspan="6" class="text-center text-muted py-8">Aucun utilisateur</td></tr>`;
+    };
+
+    window.delUser = (id) => { users = users.filter(u => u.id !== id); renderStats(); renderTable(); toast("Compte supprimé"); };
+
+    document.getElementById("user-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      users.unshift({ id: Date.now(), name: fd.get("name"), email: fd.get("email"), role: fd.get("role"), date: new Date().toLocaleDateString("fr-FR"), status: "pending" });
+      e.target.reset();
+      closeModal("user-modal");
+      renderStats(); renderTable();
+      toast("Compte créé — invitation envoyée");
+    });
+
+    ["search", "role-filter"].forEach(id => document.getElementById(id).addEventListener("input", renderTable));
+    renderStats(); renderTable();
+  </script>
+</body>
+</html>
