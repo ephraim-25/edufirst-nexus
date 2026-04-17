@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Portefeuille</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<body class="bg-bg"><div data-page-content>
+  <div class="edu-card p-6 mb-6 bg-gradient-to-br from-primary to-primary-glow text-white">
+    <div class="text-sm opacity-80">Solde restant à payer</div>
+    <div class="text-4xl font-bold mt-2">250 000 FCFA</div>
+    <button class="btn bg-white text-primary mt-4 hover:bg-white/90">Effectuer un paiement</button>
+  </div>
+  <div class="edu-card p-6">
+    <h2 class="font-semibold mb-4">Historique des paiements</h2>
+    <div class="overflow-x-auto"><table class="table"><thead><tr><th>Date</th><th>Description</th><th>Catégorie</th><th>Montant</th><th></th></tr></thead><tbody id="body"></tbody></table></div>
+  </div>
+</div>
+<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script><script src="/assets/js/receipt.js"></script>
+<script>
+renderLayout({ role: "parent", title: "Mon portefeuille", subtitle: "Historique complet et reçus téléchargeables" });
+const tx = [
+  { id:"PAY-2041", date:"10 Mar 2025", desc:"Minerval Trim. 2 — Aïcha", cat:"Minervals", ext:"Campus Nord", amount:450000 },
+  { id:"PAY-2040", date:"05 Mar 2025", desc:"Uniforme + cahiers", cat:"Boutique", ext:"Campus Nord", amount:25000 },
+  { id:"PAY-2039", date:"20 Fév 2025", desc:"Frais examen DEF", cat:"Examens", ext:"Campus Nord", amount:35000 },
+];
+document.getElementById("body").innerHTML = tx.map(t=>`<tr><td class="text-muted text-sm">${t.date}</td><td class="font-medium">${t.desc}</td><td><span class="badge badge-primary">${t.cat}</span></td><td class="font-semibold text-emerald-600">${t.amount.toLocaleString("fr-FR")} FCFA</td><td class="text-right"><button onclick='generateReceiptPDF(${JSON.stringify(t).replace(/'/g,"&apos;")})' class="text-muted hover:text-primary p-1.5">${icon("download","w-4 h-4")}</button></td></tr>`).join("");
+</script></body></html>

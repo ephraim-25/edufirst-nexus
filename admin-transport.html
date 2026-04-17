@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — Transport</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+</head>
+<body class="bg-bg">
+  <div data-page-content>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="kpis"></div>
+    <div class="edu-card p-6">
+      <h2 class="font-semibold mb-4">Bus et tournées</h2>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead><tr><th>Bus</th><th>Chauffeur</th><th>Itinéraire</th><th>Élèves</th><th>Statut</th></tr></thead>
+          <tbody id="body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+  <script>
+    renderLayout({ role: "admin", title: "Transport scolaire", subtitle: "Gestion des bus et des tournées" });
+    document.getElementById("kpis").innerHTML = [
+      { l: "Bus actifs", v: "8", i: "bus" }, { l: "Élèves transportés", v: "342", i: "users" },
+      { l: "Tournées/jour", v: "16", i: "calendar" }, { l: "Revenus mensuels", v: "1.8M FCFA", i: "wallet" },
+    ].map(s => `<div class="edu-card p-5"><div class="w-9 h-9 rounded-lg bg-primary-soft text-primary flex items-center justify-center mb-2">${icon(s.i,"w-4 h-4")}</div><div class="text-2xl font-bold">${s.v}</div><div class="text-xs text-muted mt-1">${s.l}</div></div>`).join("");
+    const buses = [
+      { id: "BUS-01", driver: "Mamadou Sy", route: "Yopougon → Campus Nord", students: 42, status: "success" },
+      { id: "BUS-02", driver: "Issa Koné", route: "Cocody → Campus Nord", students: 38, status: "success" },
+      { id: "BUS-03", driver: "Awa Diop", route: "Marcory → Campus Sud", students: 45, status: "warning" },
+      { id: "BUS-04", driver: "Boubacar Bah", route: "Treichville → Campus Sud", students: 31, status: "success" },
+    ];
+    document.getElementById("body").innerHTML = buses.map(b => `
+      <tr><td class="font-medium">${b.id}</td><td>${b.driver}</td><td class="text-muted text-sm">${b.route}</td><td>${b.students}</td><td><span class="badge badge-${b.status}">${b.status === "success" ? "En route" : "Retard"}</span></td></tr>
+    `).join("");
+  </script>
+</body></html>

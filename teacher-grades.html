@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Saisie des notes</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<body class="bg-bg"><div data-page-content>
+  <div class="edu-card p-6">
+    <div class="flex flex-wrap gap-3 items-center justify-between mb-5">
+      <div class="flex gap-3">
+        <select class="input max-w-[180px]"><option>3ème A — Maths</option><option>4ème A — Maths</option></select>
+        <select class="input max-w-[180px]"><option>Devoir 1</option><option>Composition</option></select>
+      </div>
+      <button onclick="save()" class="btn btn-primary"><span id="ck"></span> Enregistrer les notes</button>
+    </div>
+    <div class="overflow-x-auto"><table class="table">
+      <thead><tr><th>Élève</th><th>Note /20</th><th>Appréciation</th></tr></thead>
+      <tbody id="body"></tbody>
+    </table></div>
+  </div>
+</div>
+<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script>
+renderLayout({ role: "teacher", title: "Saisie des notes", subtitle: "Entrez les notes de votre classe" });
+document.getElementById("ck").innerHTML = icon("check","w-4 h-4");
+const eleves = ["Aïcha Diallo","Kofi Mensah","Yann Koffi","Fatou Camara","Sara Ouedraogo","Ibrahim Touré","Marie Diop","Boubacar Bah"];
+document.getElementById("body").innerHTML = eleves.map(e=>`<tr><td class="font-medium">${e}</td><td><input type="number" min="0" max="20" step="0.5" class="input max-w-[100px]" placeholder="—"/></td><td><input type="text" class="input" placeholder="Appréciation..."/></td></tr>`).join("");
+window.save = () => toast("Notes enregistrées ✓");
+</script></body></html>

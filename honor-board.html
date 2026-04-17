@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Tableau d'honneur</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<body class="bg-bg"><div data-page-content>
+  <div class="grid sm:grid-cols-3 gap-4 mb-6" id="podium"></div>
+  <div class="edu-card p-6">
+    <h2 class="font-semibold mb-4">Classement complet</h2>
+    <table class="table"><thead><tr><th>Rang</th><th>Élève</th><th>Classe</th><th>Moyenne</th></tr></thead><tbody id="body"></tbody></table>
+  </div>
+</div>
+<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script>
+renderLayout({ role: "admin", title: "Tableau d'honneur", subtitle: "Les meilleurs élèves de l'établissement" });
+const top = [
+  {n:"Yann Koffi",c:"Terminale C",m:18.4},{n:"Aïcha Diallo",c:"3ème A",m:17.8},{n:"Sara Ouedraogo",c:"CM2",m:17.5},
+  {n:"Fatou Camara",c:"4ème A",m:17.2},{n:"Kofi Mensah",c:"5ème B",m:16.9},{n:"Ibrahim Touré",c:"2nde",m:16.7},
+];
+const medals = ["🥇","🥈","🥉"];
+document.getElementById("podium").innerHTML = top.slice(0,3).map((s,i)=>`<div class="edu-card p-6 text-center ${i===0?'ring-2 ring-primary':''}"><div class="text-5xl mb-2">${medals[i]}</div><div class="w-16 h-16 rounded-full bg-gradient-to-br from-primary to-primary-glow text-white flex items-center justify-center mx-auto font-bold text-xl mb-2">${s.n.split(" ").map(x=>x[0]).join("")}</div><div class="font-semibold">${s.n}</div><div class="text-xs text-muted">${s.c}</div><div class="text-2xl font-bold text-primary mt-2">${s.m}/20</div></div>`).join("");
+document.getElementById("body").innerHTML = top.map((s,i)=>`<tr><td class="font-bold text-primary">#${i+1}</td><td class="font-medium">${s.n}</td><td class="text-muted text-sm">${s.c}</td><td class="font-bold">${s.m}/20</td></tr>`).join("");
+</script></body></html>

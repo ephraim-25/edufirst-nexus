@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — Inventaire & Boutique</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+</head>
+<body class="bg-bg">
+  <div data-page-content>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="kpis"></div>
+
+    <div class="edu-card p-6">
+      <div class="flex flex-wrap gap-3 items-center justify-between mb-5">
+        <div class="flex flex-wrap gap-3 flex-1">
+          <input id="search" type="text" placeholder="Rechercher un article..." class="input max-w-xs" />
+          <select id="filter-cat" class="input max-w-[180px]">
+            <option value="">Toutes catégories</option>
+            <option>Fournitures</option><option>Uniformes</option><option>Tablettes</option><option>Livres</option>
+          </select>
+          <select id="filter-ext" class="input max-w-[180px]">
+            <option value="">Toutes extensions</option>
+            <option>Toutes</option><option>Campus Nord</option><option>Campus Sud</option><option>Annexe Primaire</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="openArticleModal()"><span id="plus-icon"></span> Ajouter un article</button>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead><tr><th>Article</th><th>Catégorie</th><th>Prix</th><th>Stock</th><th>Extension</th><th>Statut</th><th></th></tr></thead>
+          <tbody id="articles-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="article-modal" class="modal-overlay">
+    <div class="modal-content p-6">
+      <div class="flex justify-between items-center mb-5">
+        <h2 class="text-lg font-semibold" id="modal-title">Ajouter un article</h2>
+        <button onclick="closeModal('article-modal')" class="text-muted hover:text-foreground" id="x-btn"></button>
+      </div>
+      <form id="article-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Photo</label>
+          <div class="border-2 border-dashed border-primary/20 rounded-lg p-4 text-center text-sm text-muted cursor-pointer">Cliquer pour uploader</div>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block text-sm font-medium mb-1.5">Nom</label><input required name="name" type="text" class="input" /></div>
+          <div><label class="block text-sm font-medium mb-1.5">Catégorie</label>
+            <select required name="cat" class="input"><option>Fournitures</option><option>Uniformes</option><option>Tablettes</option><option>Livres</option></select>
+          </div>
+          <div><label class="block text-sm font-medium mb-1.5">Prix (FCFA)</label><input required name="price" type="number" class="input" /></div>
+          <div><label class="block text-sm font-medium mb-1.5">Stock</label><input required name="stock" type="number" class="input" /></div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Disponibilité</label>
+          <select required name="ext" class="input"><option>Toutes</option><option>Campus Nord</option><option>Campus Sud</option><option>Annexe Primaire</option></select>
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Description</label>
+          <textarea name="desc" rows="3" class="input" style="height:auto;padding:0.625rem 1rem;"></textarea>
+        </div>
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" onclick="closeModal('article-modal')" class="btn btn-ghost">Annuler</button>
+          <button type="submit" class="btn btn-primary">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script>
+    renderLayout({ role: "admin", title: "Inventaire & Boutique", subtitle: "Gérez votre catalogue d'articles vendus aux familles" });
+    document.getElementById("plus-icon").innerHTML = icon("plus", "w-4 h-4");
+    document.getElementById("x-btn").innerHTML = icon("x", "w-5 h-5");
+
+    let articles = [
+      { id: 1, name: "Cahier 100 pages", cat: "Fournitures", price: 800, stock: 8, ext: "Toutes" },
+      { id: 2, name: "Uniforme primaire M", cat: "Uniformes", price: 12500, stock: 45, ext: "Annexe Primaire" },
+      { id: 3, name: "Tablette EduTab 10\"", cat: "Tablettes", price: 85000, stock: 3, ext: "Campus Nord" },
+      { id: 4, name: "Stylo bleu Bic", cat: "Fournitures", price: 250, stock: 22, ext: "Toutes" },
+      { id: 5, name: "Manuel Math 3ème", cat: "Livres", price: 6500, stock: 67, ext: "Campus Sud" },
+    ];
+
+    const renderKpis = () => {
+      const totalVal = articles.reduce((s, a) => s + a.price * a.stock, 0);
+      const low = articles.filter(a => a.stock <= 10).length;
+      const k = [
+        { label: "Articles", value: articles.length, icon: "package" },
+        { label: "Valeur stock", value: (totalVal / 1000).toFixed(0) + "K FCFA", icon: "wallet" },
+        { label: "Stock critique", value: low, icon: "alert" },
+        { label: "Catégories", value: new Set(articles.map(a => a.cat)).size, icon: "filter" },
+      ];
+      document.getElementById("kpis").innerHTML = k.map(s => `
+        <div class="edu-card p-5">
+          <div class="w-9 h-9 rounded-lg bg-primary-soft text-primary flex items-center justify-center mb-2">${icon(s.icon, "w-4 h-4")}</div>
+          <div class="text-2xl font-bold">${s.value}</div>
+          <div class="text-xs text-muted mt-1">${s.label}</div>
+        </div>
+      `).join("");
+    };
+
+    const renderTable = () => {
+      const q = document.getElementById("search").value.toLowerCase();
+      const fc = document.getElementById("filter-cat").value;
+      const fe = document.getElementById("filter-ext").value;
+      const filtered = articles.filter(a =>
+        (!q || a.name.toLowerCase().includes(q)) && (!fc || a.cat === fc) && (!fe || a.ext === fe)
+      );
+      document.getElementById("articles-body").innerHTML = filtered.map(a => {
+        const status = a.stock <= 5 ? "danger" : a.stock <= 15 ? "warning" : "success";
+        const lbl = a.stock <= 5 ? "Critique" : a.stock <= 15 ? "Bas" : "OK";
+        return `<tr>
+          <td class="font-medium">${a.name}</td>
+          <td><span class="badge badge-primary">${a.cat}</span></td>
+          <td>${a.price.toLocaleString("fr-FR")} FCFA</td>
+          <td>${a.stock}</td>
+          <td class="text-muted text-xs">${a.ext}</td>
+          <td><span class="badge badge-${status}">${lbl}</span></td>
+          <td class="text-right">
+            <button onclick="delArticle(${a.id})" class="text-muted hover:text-red-500 p-1">${icon("trash", "w-4 h-4")}</button>
+          </td>
+        </tr>`;
+      }).join("") || `<tr><td colspan="7" class="text-center text-muted py-8">Aucun article trouvé</td></tr>`;
+    };
+
+    window.openArticleModal = () => openModal("article-modal");
+    window.delArticle = (id) => { articles = articles.filter(a => a.id !== id); renderKpis(); renderTable(); toast("Article supprimé"); };
+
+    document.getElementById("article-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      articles.unshift({
+        id: Date.now(), name: fd.get("name"), cat: fd.get("cat"),
+        price: +fd.get("price"), stock: +fd.get("stock"), ext: fd.get("ext"),
+      });
+      e.target.reset();
+      closeModal("article-modal");
+      renderKpis(); renderTable();
+      toast("Article ajouté");
+    });
+
+    ["search", "filter-cat", "filter-ext"].forEach(id => document.getElementById(id).addEventListener("input", renderTable));
+
+    renderKpis(); renderTable();
+  </script>
+</body>
+</html>

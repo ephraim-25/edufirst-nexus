@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — Vue Globale</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-bg">
+  <div data-page-content>
+    <div class="grid grid-cols-2 lg:grid-cols-3 gap-4 mb-6" id="totals-grid"></div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div class="edu-card p-6">
+        <h2 class="font-semibold mb-4">Revenus par campus (FCFA)</h2>
+        <canvas id="campus-chart" height="120"></canvas>
+      </div>
+      <div class="edu-card p-6">
+        <h2 class="font-semibold mb-4">Répartition des étudiants</h2>
+        <canvas id="dist-chart" height="120"></canvas>
+      </div>
+    </div>
+
+    <div class="edu-card p-6">
+      <h2 class="font-semibold mb-4">Détail par extension</h2>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead><tr><th>Campus</th><th>Élèves</th><th>Profs</th><th>Revenus du mois</th><th>Statut</th></tr></thead>
+          <tbody id="ext-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script>
+    renderLayout({ role: "admin", title: "Vue Globale", subtitle: "Statistiques consolidées de toutes vos extensions" });
+
+    const campuses = [
+      { name: "Campus Nord", students: 487, teachers: 32, revenue: 5400000 },
+      { name: "Campus Sud", students: 312, teachers: 21, revenue: 3800000 },
+      { name: "Annexe Primaire", students: 448, teachers: 28, revenue: 3200000 },
+    ];
+    const totals = campuses.reduce((a, c) => ({ s: a.s + c.students, t: a.t + c.teachers, r: a.r + c.revenue }), { s: 0, t: 0, r: 0 });
+
+    document.getElementById("totals-grid").innerHTML = [
+      { label: "Revenus total", value: (totals.r / 1000000).toFixed(1) + "M FCFA", icon: "wallet" },
+      { label: "Étudiants", value: totals.s.toLocaleString("fr-FR"), icon: "users" },
+      { label: "Professeurs", value: totals.t, icon: "graduation" },
+    ].map(s => `
+      <div class="edu-card p-5">
+        <div class="w-10 h-10 rounded-lg bg-primary-soft text-primary flex items-center justify-center mb-3">${icon(s.icon, "w-5 h-5")}</div>
+        <div class="text-2xl font-bold">${s.value}</div>
+        <div class="text-xs text-muted mt-1">${s.label}</div>
+      </div>
+    `).join("");
+
+    document.getElementById("ext-body").innerHTML = campuses.map(c => `
+      <tr><td class="font-medium">${c.name}</td><td>${c.students}</td><td>${c.teachers}</td><td>${c.revenue.toLocaleString("fr-FR")} FCFA</td><td><span class="badge badge-success">Actif</span></td></tr>
+    `).join("");
+
+    new Chart(document.getElementById("campus-chart"), {
+      type: "bar",
+      data: { labels: campuses.map(c => c.name), datasets: [{ data: campuses.map(c => c.revenue), backgroundColor: ["#9156FF", "#B084FF", "#7A3FE8"], borderRadius: 8 }] },
+      options: { plugins: { legend: { display: false } }, scales: { y: { grid: { color: "#F1F5F9" } }, x: { grid: { display: false } } } },
+    });
+    new Chart(document.getElementById("dist-chart"), {
+      type: "doughnut",
+      data: { labels: campuses.map(c => c.name), datasets: [{ data: campuses.map(c => c.students), backgroundColor: ["#9156FF", "#B084FF", "#7A3FE8"] }] },
+      options: { plugins: { legend: { position: "bottom" } } },
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — Finances</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body class="bg-bg">
+  <div data-page-content>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="kpis"></div>
+
+    <div class="edu-card p-2 mb-6">
+      <div class="flex border-b border-border" data-tabs>
+        <button class="tab-btn active" data-tab="revenus">Revenus</button>
+        <button class="tab-btn" data-tab="impayes">Impayés</button>
+        <button class="tab-btn" data-tab="historique">Historique</button>
+      </div>
+
+      <div data-panel="revenus" class="p-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <h3 class="font-medium mb-4">Évolution mensuelle</h3>
+          <canvas id="bar-chart" height="180"></canvas>
+        </div>
+        <div>
+          <h3 class="font-medium mb-4">Répartition par catégorie</h3>
+          <canvas id="pie-chart" height="180"></canvas>
+        </div>
+      </div>
+
+      <div data-panel="impayes" class="hidden p-6">
+        <div class="overflow-x-auto">
+          <table class="table">
+            <thead><tr><th>Élève</th><th>Parent</th><th>Montant</th><th>Échéance</th><th></th></tr></thead>
+            <tbody id="unpaid-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div data-panel="historique" class="hidden p-6">
+        <div class="flex flex-wrap gap-3 mb-4">
+          <input type="date" class="input max-w-[180px]" id="date-filter" />
+          <select id="ext-filter" class="input max-w-[200px]">
+            <option value="">Toutes extensions</option><option>Campus Nord</option><option>Campus Sud</option><option>Annexe Primaire</option>
+          </select>
+          <button onclick="exportCSV()" class="btn btn-outline ml-auto"><span id="dl-icon"></span> Export CSV</button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="table">
+            <thead><tr><th>Date</th><th>Description</th><th>Catégorie</th><th>Extension</th><th>Montant</th><th></th></tr></thead>
+            <tbody id="hist-body"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/ui.js"></script>
+  <script src="/assets/js/api.js"></script>
+  <script src="/assets/js/layout.js"></script>
+  <script src="/assets/js/receipt.js"></script>
+  <script>
+    renderLayout({ role: "admin", title: "Finances", subtitle: "Suivi des revenus, impayés et transactions" });
+    initTabs("[data-tabs]");
+
+    document.getElementById("dl-icon").innerHTML = icon("download", "w-4 h-4");
+
+    document.getElementById("kpis").innerHTML = [
+      { label: "Revenus totaux", value: "12.4M FCFA", change: "+18%", icon: "wallet" },
+      { label: "Solde disponible", value: "9.8M FCFA", change: "+12%", icon: "trending" },
+      { label: "Impayés", value: "1.2M FCFA", change: "8 élèves", icon: "alert" },
+      { label: "Croissance YoY", value: "+34%", change: "vs 2024", icon: "chart" },
+    ].map(s => `
+      <div class="edu-card p-5">
+        <div class="flex items-center justify-between mb-2">
+          <span class="w-9 h-9 rounded-lg bg-primary-soft text-primary flex items-center justify-center">${icon(s.icon, "w-4 h-4")}</span>
+          <span class="text-xs text-emerald-600 font-medium">${s.change}</span>
+        </div>
+        <div class="text-xl font-bold">${s.value}</div>
+        <div class="text-xs text-muted mt-1">${s.label}</div>
+      </div>
+    `).join("");
+
+    new Chart(document.getElementById("bar-chart"), {
+      type: "bar",
+      data: { labels: ["Sep", "Oct", "Nov", "Déc", "Jan", "Fév", "Mar"], datasets: [{ label: "FCFA (M)", data: [8.2, 9.1, 10.4, 11.2, 10.8, 11.9, 12.4], backgroundColor: "#9156FF", borderRadius: 6 }] },
+      options: { plugins: { legend: { display: false } }, scales: { y: { grid: { color: "#F1F5F9" } }, x: { grid: { display: false } } } },
+    });
+    new Chart(document.getElementById("pie-chart"), {
+      type: "doughnut",
+      data: { labels: ["Minervals", "Boutique", "Cours Premium", "Frais examens"], datasets: [{ data: [62, 18, 12, 8], backgroundColor: ["#9156FF", "#B084FF", "#7A3FE8", "#C7A8FF"] }] },
+      options: { plugins: { legend: { position: "bottom" } } },
+    });
+
+    const unpaid = [
+      { eleve: "Aïcha Diallo (3ème A)", parent: "M. Diallo", amount: 250000, due: "15 Mar 2025" },
+      { eleve: "Kofi Mensah (5ème B)", parent: "Mme Mensah", amount: 180000, due: "20 Mar 2025" },
+      { eleve: "Sara Ouedraogo (CM2)", parent: "M. Ouedraogo", amount: 95000, due: "01 Avr 2025" },
+    ];
+    document.getElementById("unpaid-body").innerHTML = unpaid.map(u => `
+      <tr>
+        <td class="font-medium">${u.eleve}</td><td class="text-muted">${u.parent}</td>
+        <td class="font-semibold text-red-600">${u.amount.toLocaleString("fr-FR")} FCFA</td>
+        <td class="text-muted text-sm">${u.due}</td>
+        <td class="text-right"><button class="btn btn-outline text-xs px-3 py-1.5" onclick="toast('Rappel envoyé via Chat ✓')">${icon("msg", "w-3.5 h-3.5")} Relancer</button></td>
+      </tr>
+    `).join("");
+
+    const transactions = [
+      { id: "TX-1042", date: "15 Mar 2025", desc: "Minerval Trim. 2 — Aïcha D.", cat: "Minervals", ext: "Campus Nord", amount: 450000 },
+      { id: "TX-1041", date: "14 Mar 2025", desc: "Vente uniformes (lot 12)", cat: "Boutique", ext: "Annexe Primaire", amount: 150000 },
+      { id: "TX-1040", date: "13 Mar 2025", desc: "Cours Premium Math", cat: "Premium", ext: "Campus Sud", amount: 75000 },
+      { id: "TX-1039", date: "12 Mar 2025", desc: "Frais examen DEF", cat: "Examens", ext: "Campus Nord", amount: 35000 },
+      { id: "TX-1038", date: "11 Mar 2025", desc: "Vente tablettes (3)", cat: "Boutique", ext: "Campus Nord", amount: 255000 },
+    ];
+    const renderHist = () => {
+      const ext = document.getElementById("ext-filter").value;
+      const filtered = transactions.filter(t => !ext || t.ext === ext);
+      document.getElementById("hist-body").innerHTML = filtered.map(t => `
+        <tr>
+          <td class="text-muted text-sm">${t.date}</td>
+          <td class="font-medium">${t.desc}</td>
+          <td><span class="badge badge-primary">${t.cat}</span></td>
+          <td class="text-muted text-sm">${t.ext}</td>
+          <td class="font-semibold text-emerald-600">+${t.amount.toLocaleString("fr-FR")} FCFA</td>
+          <td class="text-right"><button onclick='generateReceiptPDF(${JSON.stringify(t).replace(/'/g, "&apos;")})' class="text-muted hover:text-primary p-1.5" title="Reçu PDF">${icon("download", "w-4 h-4")}</button></td>
+        </tr>
+      `).join("");
+    };
+    renderHist();
+    document.getElementById("ext-filter").addEventListener("change", renderHist);
+
+    window.exportCSV = () => {
+      const csv = "ID,Date,Description,Catégorie,Extension,Montant\n" + transactions.map(t => `${t.id},${t.date},"${t.desc}",${t.cat},${t.ext},${t.amount}`).join("\n");
+      const blob = new Blob([csv], { type: "text/csv" });
+      const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "transactions.csv"; a.click();
+      toast("CSV téléchargé");
+    };
+  </script>
+</body>
+</html>

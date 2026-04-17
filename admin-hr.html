@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — RH</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+</head>
+<body class="bg-bg">
+  <div data-page-content>
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6" id="kpis"></div>
+    <div class="edu-card p-6">
+      <h2 class="font-semibold mb-4">Personnel</h2>
+      <div class="overflow-x-auto">
+        <table class="table">
+          <thead><tr><th>Nom</th><th>Poste</th><th>Département</th><th>Salaire</th><th>Statut</th></tr></thead>
+          <tbody id="body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+  <script>
+    renderLayout({ role: "admin", title: "Ressources Humaines", subtitle: "Personnel enseignant et administratif" });
+    document.getElementById("kpis").innerHTML = [
+      { l: "Effectif", v: "81", i: "users" }, { l: "Professeurs", v: "62", i: "graduation" },
+      { l: "Admin", v: "12", i: "user" }, { l: "Masse salariale", v: "8.2M FCFA", i: "wallet" },
+    ].map(s => `<div class="edu-card p-5"><div class="w-9 h-9 rounded-lg bg-primary-soft text-primary flex items-center justify-center mb-2">${icon(s.i,"w-4 h-4")}</div><div class="text-2xl font-bold">${s.v}</div><div class="text-xs text-muted mt-1">${s.l}</div></div>`).join("");
+    const staff = [
+      { name: "Marie Kouassi", post: "Professeur de Maths", dept: "Sciences", salary: 450000 },
+      { name: "Ibrahim Touré", post: "Professeur d'Histoire", dept: "Lettres", salary: 420000 },
+      { name: "Aminata Sow", post: "Comptable", dept: "Administration", salary: 380000 },
+      { name: "Jean-Paul N'Goran", post: "Surveillant général", dept: "Discipline", salary: 320000 },
+    ];
+    document.getElementById("body").innerHTML = staff.map(s => `
+      <tr><td class="font-medium">${s.name}</td><td>${s.post}</td><td class="text-muted text-sm">${s.dept}</td><td class="font-semibold">${s.salary.toLocaleString("fr-FR")} FCFA</td><td><span class="badge badge-success">Actif</span></td></tr>
+    `).join("");
+  </script>
+</body></html>

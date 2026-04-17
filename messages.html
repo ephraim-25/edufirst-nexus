@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Messages</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<body class="bg-bg"><div data-page-content>
+  <div class="edu-card overflow-hidden h-[calc(100vh-200px)] flex">
+    <aside class="w-full md:w-80 border-r border-border flex flex-col">
+      <div class="p-4 border-b border-border"><input id="search" type="text" class="input" placeholder="Rechercher..." /></div>
+      <div id="channels" class="flex-1 overflow-y-auto"></div>
+    </aside>
+    <main class="hidden md:flex flex-1 flex-col">
+      <div id="chat-header" class="p-4 border-b border-border font-semibold"></div>
+      <div id="messages" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+      <form id="msg-form" class="p-4 border-t border-border flex gap-2">
+        <input id="msg-input" type="text" class="input flex-1" placeholder="Écrire un message..." />
+        <button type="submit" class="btn btn-primary"><span id="send"></span></button>
+      </form>
+    </main>
+  </div>
+</div>
+<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script>
+const role = "admin"; renderLayout({ role, title: "Messages", subtitle: "Conversations en temps réel" });
+document.getElementById("send").innerHTML = icon("send","w-4 h-4");
+const channels = [
+  {id:1,n:"Mme Kouassi",r:"Professeur",last:"Bonjour, à propos d'Aïcha...",time:"09:42",unread:2},
+  {id:2,n:"M. Diallo",r:"Parent",last:"Merci pour le suivi",time:"08:15",unread:0},
+  {id:3,n:"Annonces officielles",r:"Diffusion",last:"Réunion parents le 20/03",time:"hier",unread:1},
+];
+let active = channels[0];
+const renderChans = () => {
+  document.getElementById("channels").innerHTML = channels.map(c=>`<button onclick="select(${c.id})" class="w-full text-left p-4 hover:bg-primary-soft transition border-b border-border ${active.id===c.id?'bg-primary-soft':''}"><div class="flex justify-between items-center"><span class="font-semibold text-sm">${c.n}</span><span class="text-xs text-muted">${c.time}</span></div><div class="text-xs text-muted">${c.r}</div><div class="text-sm text-muted truncate mt-1">${c.last}</div>${c.unread?`<span class="badge badge-primary mt-1">${c.unread} nouveau</span>`:''}</button>`).join("");
+};
+window.select = (id) => { active = channels.find(c=>c.id===id); renderChans(); renderChat(); };
+const renderChat = () => {
+  document.getElementById("chat-header").textContent = active.n;
+  document.getElementById("messages").innerHTML = [
+    {me:false,t:"Bonjour, j'ai une question concernant la note de votre fille.",time:"09:30"},
+    {me:true,t:"Bonjour, je vous écoute.",time:"09:35"},
+    {me:false,t:active.last,time:active.time},
+  ].map(m=>`<div class="flex ${m.me?'justify-end':'justify-start'}"><div class="max-w-[70%] p-3 rounded-2xl ${m.me?'bg-primary text-white':'bg-bg'}"><div class="text-sm">${m.t}</div><div class="text-[10px] mt-1 ${m.me?'text-white/70':'text-muted'}">${m.time}</div></div></div>`).join("");
+};
+document.getElementById("msg-form").addEventListener("submit",e=>{e.preventDefault(); const v=document.getElementById("msg-input").value; if(!v)return; document.getElementById("messages").insertAdjacentHTML("beforeend",`<div class="flex justify-end"><div class="max-w-[70%] p-3 rounded-2xl bg-primary text-white"><div class="text-sm">${v}</div></div></div>`); document.getElementById("msg-input").value="";});
+renderChans(); renderChat();
+</script></body></html>

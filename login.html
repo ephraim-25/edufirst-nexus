@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — Connexion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+</head>
+<body class="bg-bg">
+  <div class="min-h-screen flex">
+    <!-- Branding -->
+    <div class="hidden lg:flex lg:w-1/2 bg-primary relative overflow-hidden items-center justify-center p-12">
+      <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-20 left-20 w-64 h-64 rounded-full bg-white/30 blur-3xl"></div>
+        <div class="absolute bottom-20 right-20 w-96 h-96 rounded-full bg-white/20 blur-3xl"></div>
+      </div>
+      <div class="relative z-10 max-w-lg text-white slide-up">
+        <div class="flex items-center gap-3 mb-8">
+          <div class="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center" id="logo-icon"></div>
+          <span class="text-2xl font-bold">EduFirst</span>
+        </div>
+        <h1 class="text-4xl font-bold leading-tight mb-4">Le système d'exploitation de l'éducation moderne.</h1>
+        <p class="text-white/70 text-lg">Une plateforme décentralisée pour les notes, les finances et la croissance de votre institution.</p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <div class="flex-1 flex items-center justify-center p-6 sm:p-12">
+      <div class="w-full max-w-md fade-in">
+        <div class="lg:hidden flex items-center gap-2 mb-8">
+          <div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-white" id="logo-mobile"></div>
+          <span class="text-xl font-bold">EduFirst</span>
+        </div>
+        <h2 class="text-2xl font-bold mb-1">Connexion</h2>
+        <p class="text-muted mb-8">Accédez à votre espace de gestion scolaire.</p>
+
+        <!-- Role selector -->
+        <div class="grid grid-cols-4 gap-2 mb-8" id="role-grid"></div>
+
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Email</label>
+            <input type="email" required class="input" placeholder="vous@exemple.com" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Mot de passe</label>
+            <div class="relative">
+              <input id="pw" type="password" required class="input pr-11" placeholder="••••••••" />
+              <button type="button" id="pw-toggle" class="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-foreground"></button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary w-full text-base py-3">Lancer le tableau de bord</button>
+        </form>
+
+        <div class="mt-6 text-center">
+          <a href="register.html" class="text-sm font-medium text-primary hover:underline">Créer un compte →</a>
+        </div>
+        <div class="mt-4 text-center">
+          <a href="index.html" class="text-xs text-muted hover:text-primary">← Retour à l'accueil</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    document.getElementById("logo-icon").innerHTML = icon("graduation", "w-6 h-6");
+    document.getElementById("logo-mobile").innerHTML = icon("graduation", "w-5 h-5");
+
+    const roles = [
+      { id: "admin", label: "Établissement", icon: "school" },
+      { id: "teacher", label: "Professeur", icon: "graduation" },
+      { id: "student", label: "Étudiant", icon: "user" },
+      { id: "parent", label: "Parent", icon: "users" },
+    ];
+    let selected = "admin";
+    const grid = document.getElementById("role-grid");
+    const render = () => {
+      grid.innerHTML = roles.map(r => `
+        <button type="button" data-role="${r.id}" class="flex flex-col items-center gap-1.5 p-3 rounded-xl transition ${selected === r.id ? "bg-primary-soft ring-2 ring-primary" : "bg-white shadow-surface hover:shadow-md"}">
+          <span class="${selected === r.id ? "text-primary" : "text-muted"}">${icon(r.icon, "w-5 h-5")}</span>
+          <span class="text-xs font-medium ${selected === r.id ? "text-primary" : "text-foreground"}">${r.label}</span>
+        </button>
+      `).join("");
+      grid.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { selected = b.dataset.role; render(); }));
+    };
+    render();
+
+    const pw = document.getElementById("pw");
+    const pwBtn = document.getElementById("pw-toggle");
+    const setPwIcon = () => pwBtn.innerHTML = icon(pw.type === "password" ? "eye" : "eyeOff", "w-4 h-4");
+    setPwIcon();
+    pwBtn.addEventListener("click", () => { pw.type = pw.type === "password" ? "text" : "password"; setPwIcon(); });
+
+    document.getElementById("login-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const dest = { admin: "admin-dashboard.html", teacher: "teacher-dashboard.html", student: "student-dashboard.html", parent: "parent-dashboard.html" }[selected];
+      location.href = dest;
+    });
+  </script>
+</body>
+</html>

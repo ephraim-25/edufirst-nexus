@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — EduStore</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<body class="bg-bg"><div data-page-content>
+  <div class="flex flex-wrap gap-3 mb-6">
+    <input id="search" type="text" class="input max-w-xs" placeholder="Rechercher un produit..." />
+    <select id="cat" class="input max-w-[180px]"><option value="">Toutes catégories</option><option>Fournitures</option><option>Uniformes</option><option>Tablettes</option><option>Livres</option></select>
+    <button onclick="openCart()" class="btn btn-primary ml-auto relative">${''}<span id="cart-icon"></span> Panier (<span id="cart-count">0</span>)</button>
+  </div>
+  <div id="grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+</div>
+
+<div id="cart-modal" class="modal-overlay">
+  <div class="modal-content p-6">
+    <div class="flex justify-between items-center mb-5"><h2 class="text-lg font-semibold">Mon panier</h2><button onclick="closeModal('cart-modal')" id="x"></button></div>
+    <div id="cart-items" class="space-y-3 mb-5"></div>
+    <div class="flex justify-between items-center pt-4 border-t border-border"><span class="font-semibold">Total</span><span class="text-2xl font-bold text-primary" id="total">0 FCFA</span></div>
+    <button onclick="checkout()" class="btn btn-primary w-full mt-4">Valider la commande</button>
+  </div>
+</div>
+
+<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script>
+const role = localStorage.getItem("edufirst_role") || "parent";
+renderLayout({ role, title: "EduStore", subtitle: "Boutique scolaire — fournitures, uniformes et plus" });
+document.getElementById("cart-icon").innerHTML = icon("cart","w-4 h-4");
+document.getElementById("x").innerHTML = icon("x","w-5 h-5");
+
+const products = [
+  {id:1,n:"Cahier 100p",c:"Fournitures",p:800,emoji:"📓"},{id:2,n:"Stylo bleu (lot 5)",c:"Fournitures",p:1200,emoji:"🖊️"},
+  {id:3,n:"Uniforme primaire M",c:"Uniformes",p:12500,emoji:"👕"},{id:4,n:"Uniforme collège L",c:"Uniformes",p:15000,emoji:"👔"},
+  {id:5,n:"Tablette EduTab 10\"",c:"Tablettes",p:85000,emoji:"📱"},{id:6,n:"Manuel Maths 3ème",c:"Livres",p:6500,emoji:"📚"},
+  {id:7,n:"Calculatrice scientifique",c:"Fournitures",p:8500,emoji:"🧮"},{id:8,n:"Manuel Français",c:"Livres",p:5500,emoji:"📖"},
+];
+let cart = [];
+
+const renderGrid = () => {
+  const q = document.getElementById("search").value.toLowerCase();
+  const c = document.getElementById("cat").value;
+  document.getElementById("grid").innerHTML = products.filter(p=>(!q||p.n.toLowerCase().includes(q))&&(!c||p.c===c)).map(p=>`
+    <div class="edu-card p-4">
+      <div class="aspect-square bg-primary-soft rounded-lg flex items-center justify-center text-5xl mb-3">${p.emoji}</div>
+      <div class="text-xs text-muted uppercase">${p.c}</div>
+      <div class="font-semibold text-sm mt-1 line-clamp-2 h-10">${p.n}</div>
+      <div class="font-bold text-primary mt-2">${p.p.toLocaleString("fr-FR")} FCFA</div>
+      <button onclick="add(${p.id})" class="btn btn-primary w-full mt-3 text-xs py-2">Ajouter</button>
+    </div>
+  `).join("");
+};
+window.add = (id) => { const p = products.find(x=>x.id===id); const ex = cart.find(x=>x.id===id); if(ex) ex.q++; else cart.push({...p, q:1}); document.getElementById("cart-count").textContent = cart.reduce((s,x)=>s+x.q,0); toast(p.n+" ajouté"); };
+window.openCart = () => { renderCart(); openModal("cart-modal"); };
+const renderCart = () => {
+  document.getElementById("cart-items").innerHTML = cart.length ? cart.map(c=>`<div class="flex items-center justify-between p-3 rounded-lg bg-bg"><div><div class="font-medium text-sm">${c.n}</div><div class="text-xs text-muted">${c.q} × ${c.p.toLocaleString("fr-FR")} FCFA</div></div><button onclick="rm(${c.id})" class="text-red-500">${icon("trash","w-4 h-4")}</button></div>`).join("") : '<p class="text-center text-muted py-8">Votre panier est vide</p>';
+  document.getElementById("total").textContent = cart.reduce((s,x)=>s+x.p*x.q,0).toLocaleString("fr-FR")+" FCFA";
+};
+window.rm = (id) => { cart = cart.filter(c=>c.id!==id); document.getElementById("cart-count").textContent = cart.reduce((s,x)=>s+x.q,0); renderCart(); };
+window.checkout = () => { if(!cart.length) return; cart=[]; document.getElementById("cart-count").textContent=0; closeModal("cart-modal"); toast("Commande validée ✓"); };
+["search","cat"].forEach(id=>document.getElementById(id).addEventListener("input",renderGrid));
+renderGrid();
+</script></body></html>
