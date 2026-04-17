@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — Onboarding</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+</head>
+<body class="bg-bg">
+  <div class="min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-3xl">
+      <div class="text-center mb-8">
+        <div class="flex items-center justify-center gap-2 mb-4">
+          <div class="w-10 h-10 rounded-xl bg-primary flex items-center justify-center text-white" id="logo"></div>
+          <span class="text-2xl font-bold">EduFirst</span>
+        </div>
+        <h1 class="text-2xl font-bold">Enregistrez votre école</h1>
+        <p class="text-muted mt-1 text-sm">Étape <span id="step-num">1</span> sur 2</p>
+      </div>
+
+      <div class="flex items-center gap-2 max-w-xs mx-auto mb-10">
+        <div id="bar1" class="flex-1 h-1.5 rounded-full bg-primary transition-colors"></div>
+        <div id="bar2" class="flex-1 h-1.5 rounded-full bg-gray-200 transition-colors"></div>
+      </div>
+
+      <!-- STEP 1 -->
+      <div id="step1" class="edu-card p-8 fade-in">
+        <h2 class="text-lg font-semibold mb-6">Identité de votre établissement</h2>
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Nom de l'école</label>
+            <input id="school-name" type="text" class="input" placeholder="Lycée International Victor Hugo" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Domaine</label>
+            <div class="flex">
+              <input id="domain" type="text" class="input rounded-r-none" placeholder="lycee-victor-hugo" />
+              <span class="h-11 px-4 flex items-center bg-gray-100 text-muted text-sm rounded-r-lg font-medium">.edufirst.io</span>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium mb-1.5">Logo de l'école</label>
+            <div class="border-2 border-dashed border-primary/20 rounded-xl p-8 text-center hover:border-primary/40 transition cursor-pointer">
+              <div class="flex justify-center mb-2 text-muted" id="upload-icon"></div>
+              <p class="text-sm text-muted">Glissez-déposez ou cliquez pour télécharger</p>
+              <p class="text-xs text-muted/60 mt-1">PNG, JPG jusqu'à 2 Mo</p>
+            </div>
+          </div>
+        </div>
+        <div class="mt-8 flex justify-end">
+          <button id="next-btn" class="btn btn-primary">Continuer <span id="arrow"></span></button>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div id="step2" class="hidden">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="plans-grid"></div>
+        <div class="mt-8 flex justify-between">
+          <button id="back-btn" class="btn btn-ghost"><span id="back-arrow"></span> Retour</button>
+          <button id="finish-btn" class="btn btn-primary">Créer mon établissement</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    document.getElementById("logo").innerHTML = icon("graduation", "w-6 h-6");
+    document.getElementById("upload-icon").innerHTML = icon("upload", "w-8 h-8");
+    document.getElementById("arrow").innerHTML = icon("arrowRight", "w-4 h-4");
+    document.getElementById("back-arrow").innerHTML = icon("arrowLeft", "w-4 h-4");
+
+    const plans = [
+      { name: "Starter", price: "Gratuit", period: "", features: ["Jusqu'à 50 étudiants", "Notes de base", "Support email"], featured: false },
+      { name: "Standard", price: "2 500 FCFA", period: "/ étudiant / trim.", features: ["Étudiants illimités", "EduStore intégré", "Multi-campus", "Support prioritaire"], featured: true },
+      { name: "Premium", price: "Sur devis", period: "", features: ["API personnalisée", "Account manager", "Formation sur site", "SLA garanti"], featured: false },
+    ];
+    let selectedPlan = "Standard";
+
+    const renderPlans = () => {
+      document.getElementById("plans-grid").innerHTML = plans.map(p => `
+        <button data-plan="${p.name}" class="edu-card p-6 text-left transition relative ${selectedPlan === p.name ? "ring-2 ring-primary" : ""}">
+          ${p.featured ? '<span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-primary text-white text-xs font-semibold px-3 py-1 rounded-full">Recommandé</span>' : ""}
+          <h3 class="font-semibold text-lg">${p.name}</h3>
+          <div class="mt-2 mb-4">
+            <span class="text-2xl font-bold">${p.price}</span>
+            ${p.period ? `<span class="text-sm text-muted ml-1">${p.period}</span>` : ""}
+          </div>
+          <ul class="space-y-2">
+            ${p.features.map(f => `<li class="flex items-center gap-2 text-sm text-muted">${icon("check", "w-4 h-4 text-primary flex-shrink-0")} ${f}</li>`).join("")}
+          </ul>
+        </button>
+      `).join("");
+      document.querySelectorAll("[data-plan]").forEach(b => b.addEventListener("click", () => { selectedPlan = b.dataset.plan; renderPlans(); }));
+    };
+
+    document.getElementById("next-btn").addEventListener("click", () => {
+      document.getElementById("step1").classList.add("hidden");
+      document.getElementById("step2").classList.remove("hidden");
+      document.getElementById("step2").classList.add("fade-in");
+      document.getElementById("step-num").textContent = "2";
+      document.getElementById("bar2").classList.remove("bg-gray-200"); document.getElementById("bar2").classList.add("bg-primary");
+      renderPlans();
+    });
+    document.getElementById("back-btn").addEventListener("click", () => {
+      document.getElementById("step2").classList.add("hidden");
+      document.getElementById("step1").classList.remove("hidden");
+      document.getElementById("step-num").textContent = "1";
+      document.getElementById("bar2").classList.add("bg-gray-200"); document.getElementById("bar2").classList.remove("bg-primary");
+    });
+    document.getElementById("finish-btn").addEventListener("click", () => { location.href = "admin-dashboard.html"; });
+  </script>
+</body>
+</html>

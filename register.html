@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduFirst — Inscription</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="/assets/js/tailwind-config.js"></script>
+  <link rel="stylesheet" href="/assets/css/theme.css" />
+</head>
+<body class="bg-bg">
+  <div class="min-h-screen flex items-center justify-center p-6">
+    <div class="w-full max-w-md fade-in">
+      <div class="flex items-center justify-center gap-2 mb-8">
+        <div class="w-9 h-9 rounded-xl bg-primary flex items-center justify-center text-white" id="logo"></div>
+        <span class="text-xl font-bold">EduFirst</span>
+      </div>
+
+      <h2 class="text-2xl font-bold mb-1 text-center">Créer un compte</h2>
+      <p class="text-muted mb-8 text-center text-sm">Choisissez votre profil et démarrez en 2 minutes.</p>
+
+      <div class="grid grid-cols-3 gap-2 mb-6" id="role-grid"></div>
+      <p class="text-xs text-muted text-center mb-6">Les comptes étudiants sont créés par l'établissement ou les parents (via code unique).</p>
+
+      <form id="register-form" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Nom complet</label>
+          <input required type="text" class="input" placeholder="Jean Dupont" />
+        </div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Email</label>
+          <input required type="email" class="input" placeholder="vous@exemple.com" />
+        </div>
+        <div id="extra-field"></div>
+        <div>
+          <label class="block text-sm font-medium mb-1.5">Mot de passe</label>
+          <input required type="password" class="input" placeholder="••••••••" />
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full py-3">Créer mon compte</button>
+      </form>
+
+      <div class="mt-6 text-center">
+        <a href="login.html" class="text-sm text-primary hover:underline">Déjà un compte ? Se connecter</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/ui.js"></script>
+  <script>
+    document.getElementById("logo").innerHTML = icon("graduation", "w-5 h-5");
+
+    const roles = [
+      { id: "admin", label: "Établissement", icon: "school", extra: null },
+      { id: "teacher", label: "Professeur", icon: "graduation", extra: { label: "Spécialité", placeholder: "Mathématiques, Physique..." } },
+      { id: "parent", label: "Parent", icon: "users", extra: { label: "Lien de parenté", placeholder: "Père, Mère, Tuteur..." } },
+    ];
+    let selected = "admin";
+
+    const grid = document.getElementById("role-grid");
+    const extraSlot = document.getElementById("extra-field");
+
+    const render = () => {
+      grid.innerHTML = roles.map(r => `
+        <button type="button" data-role="${r.id}" class="flex flex-col items-center gap-1.5 p-3 rounded-xl transition ${selected === r.id ? "bg-primary-soft ring-2 ring-primary" : "bg-white shadow-surface hover:shadow-md"}">
+          <span class="${selected === r.id ? "text-primary" : "text-muted"}">${icon(r.icon, "w-5 h-5")}</span>
+          <span class="text-xs font-medium ${selected === r.id ? "text-primary" : "text-foreground"}">${r.label}</span>
+        </button>
+      `).join("");
+      grid.querySelectorAll("button").forEach(b => b.addEventListener("click", () => { selected = b.dataset.role; render(); }));
+
+      const r = roles.find(x => x.id === selected);
+      extraSlot.innerHTML = r.extra ? `
+        <label class="block text-sm font-medium mb-1.5">${r.extra.label}</label>
+        <input type="text" class="input" placeholder="${r.extra.placeholder}" />
+      ` : "";
+    };
+    render();
+
+    document.getElementById("register-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (selected === "admin") location.href = "onboarding.html";
+      else location.href = `${selected}-dashboard.html`;
+    });
+  </script>
+</body>
+</html>
