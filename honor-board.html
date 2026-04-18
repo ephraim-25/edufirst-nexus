@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Tableau d'honneur</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script type="module" src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
 <body class="bg-bg"><div data-page-content>
   <div class="grid sm:grid-cols-3 gap-4 mb-6" id="podium"></div>
   <div class="edu-card p-6">
@@ -8,7 +8,7 @@
     <table class="table"><thead><tr><th>Rang</th><th>Élève</th><th>Classe</th><th>Moyenne</th></tr></thead><tbody id="body"></tbody></table>
   </div>
 </div>
-<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script type="module" src="/assets/js/ui.js"></script><script type="module" src="/assets/js/api.js"></script><script type="module" src="/assets/js/layout.js"></script>
 <script>
 renderLayout({ role: "admin", title: "Tableau d'honneur", subtitle: "Les meilleurs élèves de l'établissement" });
 const top = [

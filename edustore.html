@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — EduStore</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script type="module" src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
 <body class="bg-bg"><div data-page-content>
   <div class="flex flex-wrap gap-3 mb-6">
     <input id="search" type="text" class="input max-w-xs" placeholder="Rechercher un produit..." />
@@ -19,7 +19,7 @@
   </div>
 </div>
 
-<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script type="module" src="/assets/js/ui.js"></script><script type="module" src="/assets/js/api.js"></script><script type="module" src="/assets/js/layout.js"></script>
 <script>
 const role = localStorage.getItem("edufirst_role") || "parent";
 renderLayout({ role, title: "EduStore", subtitle: "Boutique scolaire — fournitures, uniformes et plus" });
