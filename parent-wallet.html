@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Portefeuille</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script type="module" src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
 <body class="bg-bg"><div data-page-content>
   <div class="edu-card p-6 mb-6 bg-gradient-to-br from-primary to-primary-glow text-white">
     <div class="text-sm opacity-80">Solde restant à payer</div>
@@ -12,7 +12,7 @@
     <div class="overflow-x-auto"><table class="table"><thead><tr><th>Date</th><th>Description</th><th>Catégorie</th><th>Montant</th><th></th></tr></thead><tbody id="body"></tbody></table></div>
   </div>
 </div>
-<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script><script src="/assets/js/receipt.js"></script>
+<script type="module" src="/assets/js/ui.js"></script><script type="module" src="/assets/js/api.js"></script><script type="module" src="/assets/js/layout.js"></script><script type="module" src="/assets/js/receipt.js"></script>
 <script>
 renderLayout({ role: "parent", title: "Mon portefeuille", subtitle: "Historique complet et reçus téléchargeables" });
 const tx = [

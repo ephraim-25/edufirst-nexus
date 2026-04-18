@@ -6,7 +6,7 @@
   <title>EduFirst — Inventaire & Boutique</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="/assets/js/tailwind-config.js"></script>
+  <script type="module" src="/assets/js/tailwind-config.js"></script>
   <link rel="stylesheet" href="/assets/css/theme.css" />
 </head>
 <body class="bg-bg">
@@ -73,9 +73,9 @@
     </div>
   </div>
 
-  <script src="/assets/js/ui.js"></script>
-  <script src="/assets/js/api.js"></script>
-  <script src="/assets/js/layout.js"></script>
+  <script type="module" src="/assets/js/ui.js"></script>
+  <script type="module" src="/assets/js/api.js"></script>
+  <script type="module" src="/assets/js/layout.js"></script>
   <script>
     renderLayout({ role: "admin", title: "Inventaire & Boutique", subtitle: "Gérez votre catalogue d'articles vendus aux familles" });
     document.getElementById("plus-icon").innerHTML = icon("plus", "w-4 h-4");

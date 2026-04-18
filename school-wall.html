@@ -1,13 +1,13 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>EduFirst — Mur de l'école</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&display=swap" rel="stylesheet" /><script src="https://cdn.tailwindcss.com"></script><script type="module" src="/assets/js/tailwind-config.js"></script><link rel="stylesheet" href="/assets/css/theme.css" /></head>
 <body class="bg-bg"><div data-page-content>
   <div class="max-w-2xl mx-auto space-y-5">
     <div class="edu-card p-5"><textarea class="input" style="height:auto;padding:0.75rem 1rem;" rows="3" placeholder="Partagez une annonce ou un événement..."></textarea><div class="flex justify-end mt-3"><button onclick="toast('Publication envoyée ✓')" class="btn btn-primary">Publier</button></div></div>
     <div id="posts" class="space-y-5"></div>
   </div>
 </div>
-<script src="/assets/js/ui.js"></script><script src="/assets/js/api.js"></script><script src="/assets/js/layout.js"></script>
+<script type="module" src="/assets/js/ui.js"></script><script type="module" src="/assets/js/api.js"></script><script type="module" src="/assets/js/layout.js"></script>
 <script>
 renderLayout({ role: "admin", title: "Mur de l'école", subtitle: "Annonces, photos et événements" });
 const posts = [
